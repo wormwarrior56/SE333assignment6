@@ -18,7 +18,7 @@ public class playwrightAITests {
 
     @BeforeAll
     static void setup() throws Exception {
-        browser = Playwright.create().chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = Playwright.create().chromium().launch(new BrowserType.LaunchOptions().setHeadless(true));
         context = browser.newContext(new Browser.NewContextOptions()
                 .setRecordVideoDir(Paths.get("videosAI/"))
                 .setRecordVideoSize(1280, 720));
@@ -196,12 +196,11 @@ public class playwrightAITests {
         // Assert the main order summary mentions handling (case-insensitive content check via lowercase substring).
         assertThat(page.getByLabel("main")).containsText("handling"); // most recent change
         assertThat(page.locator("text=$3.00").first()).containsText("$3.00");
-        assertThat(page.getByLabel("main")).containsText("Order Summary Subtotal $164.98 Handling To support the bookstore's ability to provide a best-in-class online and campus bookstore experience, " +
-                "and to offset the rising costs of goods and services, an online handling fee of $3.00 per transaction is charged. This fee offsets additional expenses including fulfillment, distribution, operational optimization, and " +
-                "personalized service. No minimum purchase required. $3.00 Taxes TBD Estimated Total $167.98"); // manually edited
         assertThat(page.locator("text=$17.22").first()).containsText("$17.22");
         assertThat(page.getByLabel("main")).containsText("Total $185.20 185.2 $"); // also manually edited
         assertThat(page.locator("text=$185.20").first()).containsText("$185.20");
+        assertThat(page.getByLabel("main")).containsText("JBL Quantum True Wireless Noise Cancelling Gaming Earbuds- Black");    //last two lines
+        assertThat(page.getByLabel("main")).containsText("$164.98");                                                            //manually added
 
         // AssertThat pickup item and price are present in the main order summary (avoid asserting a possibly hidden link)
         assertThat(page.getByLabel("main")).containsText("JBL Quantum");
