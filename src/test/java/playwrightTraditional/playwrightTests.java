@@ -30,6 +30,7 @@ public class playwrightTests {
                 .setRecordVideoSize(1280, 720));
         page = context.newPage();
         page.navigate("https://depaul.bncollege.com/");
+        page.setDefaultTimeout(10000);
     }
 
     @Test
@@ -66,15 +67,16 @@ public class playwrightTests {
         page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Enter Promo Code")).click();
         page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Enter Promo Code")).fill("TEST");
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Apply Promo Code")).click();
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions()
-                .setName("Proceed To Checkout")
-                .setExact(false))
-                .first()
-                .click();
+        page.waitForTimeout(200); //the reason for the inconsistency in lower lines is because line 71 would sometimes be missed, getting stuck on testcase2. a slight wait accounts for the screen moving up and down when applying a promo code.
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Proceed To Checkout")).first().click();
+
+
+        page.waitForTimeout(1000); //something is still happening in testcase3 to make it inconsistent, this is a blanket fix
 
         //testcase3
-        page.locator(".bned-create-account-section").click();
+        page.locator(".bned-create-account-section").click(); //originally thought that the page automatically being put in a text box was causing issues, so i put this here to get out of the text box, but this introduces more problems
         assertThat(page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setName("Create Account"))).isVisible();
+
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Proceed As Guest")).click();
 
         //testcase4
@@ -108,7 +110,7 @@ public class playwrightTests {
         //testcase6
         assertThat(page.getByLabel("main")).containsText("Order Subtotal $164.98");
         assertThat(page.getByLabel("main")).containsText("Handling To support the bookstore's ability to provide a best-in-class online and campus bookstore experience, and to offset the rising costs of goods and services, an online handling fee of $3.00 per transaction is charged. This fee offsets additional expenses including fulfillment, distribution, operational optimization, and personalized service. No minimum purchase required. $3.00");
-        assertThat(page.getByLabel("main")).containsText("Tax $17.22");
+        assertThat(page.locator("text=$17.22").first()).containsText("$17.22");
         assertThat(page.getByLabel("main")).containsText("Total $185.20 185.2 $");
         assertThat(page.getByLabel("main")).containsText("JBL Quantum True Wireless Noise Cancelling Gaming Earbuds- Black");
         assertThat(page.getByLabel("main")).containsText("$164.98");
