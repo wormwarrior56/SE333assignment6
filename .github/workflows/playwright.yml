@@ -14,8 +14,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '25'
-      - name: playwright browsers
-        run: mvn playwright:install
       - name: Build & Install
         run: mvn -B install -D skipTests --no-transfer-progress
       - name: Ensure browsers are installed
