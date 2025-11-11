@@ -29,7 +29,6 @@ public class playwrightTests {
                 .setRecordVideoDir(Paths.get("videos/"))
                 .setRecordVideoSize(1280, 720));
         page = context.newPage();
-        page.setDefaultTimeout(120000);
         page.navigate("https://depaul.bncollege.com/");
     }
 
